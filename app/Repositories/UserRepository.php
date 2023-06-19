@@ -4,13 +4,19 @@ namespace App\Repositories;
 
 
 use App\Models\User;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class UserRepository
 {
 
     public function getUser($id)
     {
-        return User::find($id);
+        $user = Cache::remember('users-' . $id, 60, function () use ($id) {
+            return User::find($id);
+        });
+
+        return $user;
     }
 
     public function createUser($name, $email, $password)
@@ -26,11 +32,22 @@ class UserRepository
 
     public function deleteUser($id)
     {
-        return User::find($id)?->delete();
+        $result = User::find((int)$id)?->delete();
+        if ($result && Cache::has('users-' . $id)) {
+            Cache::forget('users-' . $id);
+        }
+        return $result;
     }
 
     public function updateUser($id, $data)
     {
-        return User::find($id)?->update($data);
+        $result = User::find($id)?->update($data);
+        if ($result && Cache::has('users-' . $id)) {
+            // Cache::forget('users-' . $id);
+            Cache::remember('users-' . $id, 60, function () use ($result) {
+                return $result;
+            });
+        }
+        return $result;
     }
 }
