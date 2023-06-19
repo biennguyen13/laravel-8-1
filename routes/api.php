@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TestEventController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -44,6 +45,7 @@ Route::group(['middleware' => ['auth:api',]], function () {
     Route::delete('/user/{id}', [UserController::class, 'delete'])->name('users.delete');
     Route::post('/user/{id}', [UserController::class, 'update'])->name('users.update');
     Route::post('/upload', [UploadController::class, 'upload'])->name('upload');
+    Route::get('/test-event', [TestEventController::class, 'testEvent'])->name('testEvent');
 });
 
 // Route::middleware('auth:api')->get('/test', function (Request $request) {

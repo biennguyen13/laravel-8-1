@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use App\Events\TestEvent;
+use App\Listeners\TestListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -18,6 +21,9 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        // TestEvent::class => [
+        //     TestListener::class,
+        // ],
     ];
 
     /**
@@ -27,6 +33,13 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Event::listen(
+            TestEvent::class,
+            [TestListener::class, 'handle']
+        );
+
+        // Event::listen(function (TestEvent $event) {
+        //     Log::info('listening 2', [$event]);
+        // });
     }
 }
