@@ -12,11 +12,9 @@ class UserRepository
 
     public function getUser($id)
     {
-        $user = Cache::remember('users-' . $id, 60, function () use ($id) {
+        return Cache::remember('users-' . $id, 60, function () use ($id) {
             return User::find($id);
         });
-
-        return $user;
     }
 
     public function createUser($name, $email, $password)
@@ -32,22 +30,13 @@ class UserRepository
 
     public function deleteUser($id)
     {
-        $result = User::find((int)$id)?->delete();
-        if ($result && Cache::has('users-' . $id)) {
-            Cache::forget('users-' . $id);
-        }
-        return $result;
+        Cache::forget('users-' . $id);
+        return User::find((int)$id)?->delete();
     }
 
     public function updateUser($id, $data)
     {
-        $result = User::find($id)?->update($data);
-        if ($result && Cache::has('users-' . $id)) {
-            // Cache::forget('users-' . $id);
-            Cache::remember('users-' . $id, 60, function () use ($result) {
-                return $result;
-            });
-        }
-        return $result;
+        Cache::forget('users-' . $id);
+        return  User::find($id)?->update($data);
     }
 }
