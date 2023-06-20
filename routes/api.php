@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SendMailController;
 use App\Http\Controllers\TestEventController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UserController;
@@ -46,6 +47,7 @@ Route::group(['middleware' => ['auth:api',]], function () {
     Route::post('/user/{id}', [UserController::class, 'update'])->name('users.update');
     Route::post('/upload', [UploadController::class, 'upload'])->name('upload');
     Route::get('/test-event', [TestEventController::class, 'testEvent'])->name('testEvent');
+    Route::post('/test-sendmail', [SendMailController::class, 'SendMail'])->name('SendMail');
 });
 
 // Route::middleware('auth:api')->get('/test', function (Request $request) {
